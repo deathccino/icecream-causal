@@ -1,3 +1,4 @@
 data:
   path: 'C:\Users\ccino\Documents\data_science\projects\icecream-causal\data\ice_cream_sales.csv'
   path_rnd: 'C:\Users\ccino\Documents\data_science\projects\icecream-causal\data\ice_cream_sales_rnd.csv'
+  processed: 'C:\Users\ccino\Documents\data_science\projects\icecream-causal\data'
