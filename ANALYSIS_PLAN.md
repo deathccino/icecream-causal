@@ -1,3 +1,13 @@
+# TO-DO
+
+* make notebooks with all the logic
+* modularize the code in a pipeline
+* unit-tests with pytest
+* mlflow
+* typing
+* shap
+
+
 # Production-Ready Causal HTE Analysis Plan
 
 This document outlines a structured approach for conducting a Heterogeneous Treatment Effect (HTE) analysis using DoWhy and EconML, transitioning from initial exploration to a reproducible, production-ready pipeline.

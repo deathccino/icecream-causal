@@ -1,3 +1,9 @@
 data:
   path: 'C:\Users\ccino\Documents\data_science\projects\icecream-causal\data\ice_cream_sales.csv'
   path_rnd: 'C:\Users\ccino\Documents\data_science\projects\icecream-causal\data\ice_cream_sales_rnd.csv'
+  processed: 'C:\Users\ccino\Documents\data_science\projects\icecream-causal\data'
+
+model:
+  treatment: 'price'
+  outcome: 'sales'
+  features: ['weekday_1', 'weekday_2', 'weekday_3', 'weekday_4', 'weekday_5', 'weekday_6', 'weekday_7', 'temp', 'cost']
