@@ -4,10 +4,9 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
-def train_estimator(config: dict, filename: str):
-    filepath = Path(config['data']['processed']) / filename
+def train_estimator(config: dict, df: pd.DataFrame):
+
     model_details = config['model']
-    df = pd.read_csv(filepath)
 
     m1 = CausalForestDML(
         model_t=GradientBoostingRegressor(),
