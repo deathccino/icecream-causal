@@ -23,6 +23,7 @@ def fit_preprocessor(df: pd.DataFrame, features: list) -> ColumnTransformer:
     return preprocessor
 
 def create_dummies(df: pd.DataFrame, preprocessor: ColumnTransformer) -> pd.DataFrame:
+    #perhaps I should serialize the fitted preprocessor?
     prc = preprocessor
     cols = [re.sub('.*__', '', col) for col in prc.get_feature_names_out()]
     df_prc = pd.DataFrame(
