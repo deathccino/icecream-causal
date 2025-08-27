@@ -4,8 +4,9 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 import mlflow
+import matplotlib.pyplot as plt
 from load_and_process_data import load_data
-from utils import load_config
+from utils import load_config, sensitivity, sensitivity_cum, calc_AUUC
 
 class ModelWrapper(mlflow.pyfunc.PythonModel):
     def __init__(self, estimator: CausalForestDML):
@@ -44,6 +45,31 @@ def log_mlflow_model(model, input_example):
     )
     return model_info
 
+def plot_uplift_curve(model: CausalForestDML, df: pd.DataFrame, features: list[str], outcome: str, treatment: str):
+
+    y_pred = model.const_marginal_effect(df[features])
+    df_c = df.assign(pred=y_pred, rnd=np.random.uniform(size=df.shape[0]))
+
+    #calculate sensitivity
+    X, y = sensitivity_cum(df_c, 'pred', outcome, treatment)
+    _, y_rnd = sensitivity_cum(df_c, 'rnd', outcome, treatment)
+    full_sensitivity = sensitivity(df_c, outcome, treatment)
+
+    fig, axs = plt.subplots(figsize=(8, 6))
+    axs.plot(X, y_rnd, label='Random')
+    axs.plot(X, y, label='Model')
+
+    axs.set_xlabel('samples')
+    axs.set_ylabel('gain')
+    axs.set_title(f'Dataset sensitivity: {full_sensitivity:.3f}')
+
+    plt.grid(alpha=0.2)
+    plt.tight_layout()
+    plt.legend()
+    fig.savefig('artifacts/chart.png')
+
+    return X, y, y_rnd
+
 def main():
     config = load_config()
     filepath = config['data']['path'] + r'\\processed'
@@ -59,6 +85,26 @@ def main():
 
         #log the econml estimator
         model_info = log_mlflow_model(model, input_example=df_train.loc[[0], features])
+
+        #log the uplift curve
+        X, y, y_rnd = plot_uplift_curve(model, df_train, features, config['model']['outcome'], config['model']['treatment'])
+        auuc_model = calc_AUUC(X, y)
+        print(f'AUUC Model: {auuc_model:.3f}')
+
+        mlflow.log_artifact('./artifacts/chart.png', artifact_path='charts')
+        mlflow.log_metric("AUUC", auuc_model)
+
+
+        mlflow.log_params(
+            {
+                'treatment': config['model']['treatment'],
+                'outcome': config['model']['outcome'],
+                'features': config['model']['features'],
+                'estimator_type': 'CausalForest'
+             }
+        )
+
+
 
 if __name__ == '__main__':
     main()
