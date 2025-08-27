@@ -5,8 +5,9 @@ build/
 dist/
 wheels/
 *.egg-info
-ANALYSIS_PLAN.md
-PROJECT_ANALYSIS.md
 
 # Virtual environments
 .venv
+
+# folders
+planning/
